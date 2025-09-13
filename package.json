@@ -1,0 +1,12 @@
+{
+  "name": "trello-api",
+  "packageManager": "yarn@4.9.3",
+  "description": "trungbuidev",
+  "private": true,
+  "license": "MIT",
+  "main": "scr/server.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "type": "module"
+}
