@@ -1,33 +1,34 @@
-/**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
- */
-
 import express from 'express'
-
 import { mapOrder } from '~/utils/sorts.js'
+import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
+import { env } from '~/config/environment'
+import { APIs_v1 } from '~/routes/v1'
+import {errorHandlingMiddleware} from '~/middlewares/errorHandlingMiddleware'
+// import exitHook from 'async-exit-hook'
+import a from 'async-exit-hook'
+const exitHook = a
+const START_SERVER = () => {
 
-const app = express()
+  const app = express()
+  //Enable req.body json data
+  app.use(express.json())
+  //Use APIs v1
+  app.use('/v1', APIs_v1)
+  //Middlewares xu ly loi tap trung
+  app.use(errorHandlingMiddleware)
 
-const hostname = 'localhost'
-const port = 8018
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    console.log(`Hello Trung Quan Dev, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
+  })
+  exitHook(() => {
+    CLOSE_DB()
+  })
+}
 
-app.get('/', (req, res) => {
-  // Test Absolute import mapOrder
-  console.log(mapOrder(
-    [{ id: 'id-1', name: 'One' },
-    { id: 'id-2', name: 'Two' },
-    { id: 'id-3', name: 'Three' },
-    { id: 'id-4', name: 'Four' },
-    { id: 'id-5', name: 'Five' }],
-    ['id-5', 'id-4', 'id-2', 'id-3', 'id-1'],
-    'id'
-  ))
-  res.end('<h1>Hello World!</h1><hr>')
-})
-
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Hello Trung Quan Dev, I am running at http://${hostname}:${port}/`)
-})
+CONNECT_DB()
+  .then(() => console.log('Kết nối thành công'))
+  .then(() => START_SERVER())
+  .catch(error => {
+    console.error(error)
+    process.exit(0)
+  })
