@@ -3,7 +3,7 @@ import cors from 'cors'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { APIs_v1 } from '~/routes/v1'
-import {errorHandlingMiddleware} from '~/middlewares/errorHandlingMiddleware'
+import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 import { corsOptions } from '~/config/cors'
 // import exitHook from 'async-exit-hook'
 import a from 'async-exit-hook'
@@ -19,9 +19,18 @@ const START_SERVER = () => {
   //Middlewares xu ly loi tap trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(`Hello Trung Quan Dev, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
-  })
+  if (env.BUILD_MODE === 'production') {
+    app.listen(process.env.PORT, () => {
+      console.log(`Hello Trung Bui DEV, I am Production running at http://${env.APP_HOST}:${env.APP_PORT}/`)
+    })
+  }
+  else {
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`Hello Trung Bui Dev, I am Dev running at http://${env.APP_HOST}:${env.APP_PORT}/`)
+    })
+  }
+
+
   exitHook(() => {
     CLOSE_DB()
   })
