@@ -1,16 +1,52 @@
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/ApiError'
+import { boardService } from '~/services/boardService'
 const createNew = async (req, res, next) => {
     try {
-        throw new ApiError(StatusCodes.BAD_GATEWAY,'error trung11')
-        //    res.status(StatusCodes.CREATED).json({ message: 'controller' })
+        //Điều hướng dữ liệu sang tầng service
+        const createBoard = await boardService.createNew(req.body)
+        // Có kết quả trả về Client
+        res.status(StatusCodes.CREATED).json(createBoard)
+       
     } catch (error) {
         next(error)
-        // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        //     errors: error.message
-        // }) 
+    }
+}
+const getDetails = async (req, res, next) => {
+    try {
+        const boardId = req.params.id
+        const board = await boardService.getDetails(boardId)
+        // Có kết quả trả về Client
+        res.status(StatusCodes.OK).json(board)
+       
+    } catch (error) {
+        next(error)
+    }
+}
+const update = async (req, res, next) => {
+    try {
+        const boardId = req.params.id
+
+        const updatedBoard = await boardService.update(boardId, req.body)
+        // Có kết quả trả về Client
+        res.status(StatusCodes.OK).json(updatedBoard)
+       
+    } catch (error) {
+        next(error)
+    }
+}
+const moveCardToDifferentColumn = async (req, res, next) => {
+    try {
+        const result = await boardService.moveCardToDifferentColumn( req.body)
+        // Có kết quả trả về Client
+        res.status(StatusCodes.OK).json(result)
+       
+    } catch (error) {
+        next(error)
     }
 }
 export const boardController = {
-    createNew
+    createNew,
+    getDetails,
+    update,
+    moveCardToDifferentColumn
 }
