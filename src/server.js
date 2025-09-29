@@ -26,7 +26,7 @@ const START_SERVER = () => {
   }
   else {
     app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
-      console.log(`Hello Trung Bui Dev, I am Dev running at http://${env.APP_HOST}:${env.APP_PORT}/`)
+      console.log(`Hello Trung Bui Dev, I am Dev running at http://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}/`)
     })
   }
 
