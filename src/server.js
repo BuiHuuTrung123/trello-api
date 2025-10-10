@@ -5,12 +5,24 @@ import { env } from '~/config/environment'
 import { APIs_v1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 import { corsOptions } from '~/config/cors'
+import cookieParser from 'cookie-parser'
 // import exitHook from 'async-exit-hook'
 import a from 'async-exit-hook'
 const exitHook = a
 const START_SERVER = () => {
 
   const app = express()
+
+  // Lấy cache từ disk qua ExpressJS
+  // https://stackoverflow.com/a/53244017/8324172
+  app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
+
+  //cau hinh cookieParser
+  app.use(cookieParser())
+  //
   app.use(cors(corsOptions))
   //Enable req.body json data
   app.use(express.json())
