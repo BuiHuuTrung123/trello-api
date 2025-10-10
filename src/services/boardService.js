@@ -1,6 +1,6 @@
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
-import { ApiError } from '~/utils/ApiError'
+import  ApiError  from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
 import { columnModel } from '~/models/columnModel'
@@ -19,7 +19,7 @@ const createNew = async (reqBody) => {
         //Bắn email, notification về cho admin khi 1 board mới được tạo
         if (getNewBoard) {
             getNewBoard.columns = []
-            console.log('getNewBoard', getNewBoard.column)
+          
         }
         return getNewBoard
 

@@ -12,7 +12,7 @@ try {
     if(getNewColumn) {
         
         getNewColumn.cards = []
-        console.log('getNewColumn', getNewColumn.cards)
+    
         await boardModel.pushColumnOrderIds(getNewColumn)
     }
     //Bắn email, notification về cho admin khi 1 board mới được tạo
