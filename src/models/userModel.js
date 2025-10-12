@@ -84,7 +84,7 @@ const update = async (userId, updateData) => {
         { returnDocument: 'after' } // trả về kết quả mới sau khi cập nhật
       )
 
-    return result.value 
+    return result
   } catch (error) {
     throw new Error(error)
   }

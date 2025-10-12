@@ -80,7 +80,7 @@ try {
         {returnDocument: 'after'}
     )
   
-    return result.value || null
+    return result || null
 
 } catch (error) {
     
