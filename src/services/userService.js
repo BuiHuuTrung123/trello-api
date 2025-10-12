@@ -8,7 +8,7 @@ import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
 import { env } from '~/config/environment'
 import { jwtProvider } from '~/providers/jwtProvider'
-
+import {CloudinaryProvider} from '~/providers/CloudinaryProvider'
 const createNew = async (reqBody) => {
     try {
         // Kiem tra email da ton tai trong hệ thống chưa
@@ -126,11 +126,10 @@ const refreshToken = async (clientRefreshToken) => {
         throw error
     }
 }
-const update = async (userId, reqBody) => {
+const update = async (userId, reqBody, userAvataFile) => {
     try {
         // Query User và kiểm tra cho chắc chắn
         const existUser = await userModel.findOneById(userId)
-console.log('end', existUser._id)
         if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
         if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your account is not active!')
 
@@ -149,6 +148,15 @@ console.log('end', existUser._id)
                 password: bcryptjs.hashSync(reqBody.new_password, 8),
             })
             
+        }
+        else if (userAvataFile) {
+        //upload file len cloudinary
+        const uploadResult = await CloudinaryProvider.streamUpload(userAvataFile.buffer,'users')
+
+         updatedUser = await userModel.update(existUser._id, {
+           avatar: uploadResult.secure_url
+         })
+        console.log(uploadResult)
         }
         else {
             //Update các thông tin chung
