@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 // Kiem tra file nao duoc chap nhan 
 
 const customFileFilter = (req, file, callback) => {
-    console.log(file)
+
     // Doi voi multer kiem tra kieu file su dung mimetype
     if (!ALLOW_COMMON_FILE_TYPES.includes(file.mimetype)) {
         const errMessage = 'File type is invalid. Only accept jpg, jpeg and png'

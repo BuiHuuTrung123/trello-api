@@ -67,7 +67,7 @@ const findOneByEmail = async (emailValue) => {
 }
 
 const update = async (userId, updateData) => {
-   console.log('model',updateData)
+
   try {
     // Lọc những field mà chúng ta không cho phép cập nhật
     Object.keys(updateData).forEach(fieldName => {

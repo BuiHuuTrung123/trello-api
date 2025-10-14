@@ -139,9 +139,7 @@ const update = async (userId, reqBody, userAvataFile) => {
         if (reqBody.current_password && reqBody.new_password) {
             //Kiểm tra xem current_password có đúng k 
             if (!bcryptjs.compareSync(reqBody.current_password, existUser.password)) {
-                 console.log('req.body.current_password:', reqBody.current_password)
-                  console.log('req.body.password:', existUser.password)
-                   console.log('req.body.full:', reqBody)
+               
                 throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your current password is incorrect!')
             }
             updatedUser = await userModel.update(existUser._id, {
@@ -156,7 +154,7 @@ const update = async (userId, reqBody, userAvataFile) => {
          updatedUser = await userModel.update(existUser._id, {
            avatar: uploadResult.secure_url
          })
-        console.log(uploadResult)
+      
         }
         else {
             //Update các thông tin chung
