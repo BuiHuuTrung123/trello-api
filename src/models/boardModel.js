@@ -35,11 +35,15 @@ const validateBeforeCreate = async (data) => {
     return await BOADRD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
 
-const createNew = async (data) => {
+const createNew = async (userId, data) => {
     try {
         const validData = await validateBeforeCreate(data)
-
-        const createBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
+        const newBoardToAdd = {
+            ...validData,
+            ownerIds: [new ObjectId(userId)]
+        }
+         
+        const createBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(newBoardToAdd)
 
         return createBoard
     } catch (error) {
@@ -57,14 +61,21 @@ const findOneById = async (id) => {
 
     }
 }
-const getDetails = async (id) => {
+const getDetails = async (userId, boardId) => {
     try {
+        const queryConditions = [
+            { _id: new ObjectId(boardId), },
+            { _destroy: false },
+            {
+                $or: [
+                    { ownerIds: { $in: [new ObjectId(userId)] } },
+                    { memberIds: { $in: [new ObjectId(userId)] } }
+                ]
+            }
+        ]
         const result = await GET_DB().collection(BOARD_COLLECTION_NAME).aggregate([
             {
-                $match: {
-                    _id: new ObjectId(id),
-                    _destroy: false
-                }
+                $match: { $and: queryConditions }
             },
             {
                 $lookup: {
@@ -133,8 +144,8 @@ const getBoards = async (userId, page, itemsPerPage) => {
             // userId đang thực hiện request này nó phải thuộc vào 1 trong 2 cái mảng ownerIds hoặc memberIds, sử dụng toán tử $all của mongodb 
             {
                 $or: [
-                    { ownerIds: { $in: [ new ObjectId(userId) ] } },
-                    { memberIds: { $in: [ new ObjectId(userId) ] } }
+                    { ownerIds: { $in: [new ObjectId(userId)] } },
+                    { memberIds: { $in: [new ObjectId(userId)] } }
                 ]
             }
         ]
@@ -160,17 +171,16 @@ const getBoards = async (userId, page, itemsPerPage) => {
 
             ],
             //khai báo collation locale 'en' fix chứ B hoa đứng trước a thường
-            { collation: {locale: 'en'} }
+            { collation: { locale: 'en' } }
         ).toArray()
 
-        console.log('query',query)
+
 
         const res = query[0]
-
         return {
-         boards: res.queryBoards || [],
-         totalBoards: res.queryTotalBoards[0]?.countedAllBoards || 0 
-        } 
+            boards: res.queryBoards || [],
+            totalBoards: res.queryTotalBoards[0]?.countedAllBoards || 0
+        }
     } catch (error) {
 
     }
