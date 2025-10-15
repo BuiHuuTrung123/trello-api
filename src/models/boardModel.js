@@ -42,7 +42,7 @@ const createNew = async (userId, data) => {
             ...validData,
             ownerIds: [new ObjectId(userId)]
         }
-         
+
         const createBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(newBoardToAdd)
 
         return createBoard
@@ -185,7 +185,17 @@ const getBoards = async (userId, page, itemsPerPage) => {
 
     }
 }
+const getBoardsId = async (ownerId) => {
+    try {
+       const result = await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOne({ ownerIds: { $in: [new ObjectId(ownerId)] } })
+    return result
+    
+    } catch (error) {
 
+    }
+}
 export const boardModel = {
     BOARD_COLLECTION_NAME,
     BOADRD_COLLECTION_SCHEMA,
@@ -194,5 +204,6 @@ export const boardModel = {
     getDetails,
     pushColumnOrderIds,
     update,
-    getBoards
+    getBoards,
+    getBoardsId
 }

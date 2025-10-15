@@ -49,6 +49,7 @@ const moveCardToDifferentColumn = async (req, res, next) => {
 const getBoards = async (req, res, next) => {
     try {
         const userId = req.jwtDecoded._id
+
         // page và itemsPerPage được truyền vào trong query url từ phía FE nên sẽ lấy thông qua req.query
         const { page, itemsPerPage } = req.query
         const results = await boardService.getBoards(userId, page, itemsPerPage)
@@ -58,11 +59,25 @@ const getBoards = async (req, res, next) => {
     }
 }
 
+const getBoardsId = async (req, res, next) => {
+    try {
+       
+        // Log riêng email nếu cần
+        console.log('req.query.email:', req.query.email)
+        const results = await boardService.getBoardsId(req.query.email)
+        // 👉 chỉ có nếu client gửi POST
 
+        res.status(StatusCodes.OK).json(results)
+    } catch (error) {
+        next(error)
+    }
+
+}
 export const boardController = {
     createNew,
     getDetails,
     update,
     moveCardToDifferentColumn,
-    getBoards
+    getBoards,
+    getBoardsId
 }

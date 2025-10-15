@@ -1,5 +1,6 @@
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
+import { userModel } from '~/models/userModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
@@ -100,11 +101,24 @@ const getBoards = async (userId, page, itemsPerPage) => {
         throw error
     }
 }
+const getBoardsId = async (email) => {
+    try {
+        const existUser = await userModel.findOneByEmail(email)
+        if (!existUser) throw new Error('User not found')
+        // 2️⃣ Dùng _id của user để tìm board
+        const boardId = await boardModel.getBoardsId(existUser._id)
 
+
+        return boardId
+    } catch (error) {
+        throw error
+    }
+}
 export const boardService = {
     createNew,
     getDetails,
     update,
     moveCardToDifferentColumn,
-    getBoards
+    getBoards,
+    getBoardsId
 }
