@@ -10,6 +10,7 @@ const USER_ROLES = {
 
 // Define Collection (name & schema)
 const USER_COLLECTION_NAME = 'users'
+const BOARD_COLLECTION_NAME = 'boards'
 const USER_COLLECTION_SCHEMA = Joi.object({
   email: Joi.string().required().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE), // unique
   password: Joi.string().required(),
@@ -38,6 +39,23 @@ const createNew = async (data) => {
     const createdUser = await GET_DB()
       .collection(USER_COLLECTION_NAME)
       .insertOne(validData)
+
+      console.log(createdUser)
+      const boardTitle = 'My First Board'
+    const defaultBoard = {
+      title: boardTitle,
+      description: 'Welcome to your workspace!',
+      type: 'private',
+      slug: 'Board', // -> "my-first-board"
+      columnOrderIds: [], // ban đầu rỗng, có thể thêm sau
+      ownerIds: [new ObjectId(createdUser.insertedId)],
+      memberIds: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      _destroy: false
+    }
+
+    await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(defaultBoard)
     return createdUser
   } catch (error) {
     throw new Error(error)

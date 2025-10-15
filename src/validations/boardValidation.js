@@ -7,7 +7,10 @@ const createNew = async (req, res, next) => {
     const correctCondition = joi.object({
         title: joi.string().required().min(3).max(50).trim().strict(),
         description: joi.string().required().min(3).max(256).trim().strict(),
-        type: joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
+        type: joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required(),
+        ownerIds: joi.array().items(
+            joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+        ).default([]),
     })
     try {
         //set abortEarly = false để trường hợp có nhiều lỗi validation thì trả về tất cả

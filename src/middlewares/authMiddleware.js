@@ -34,5 +34,5 @@ import ApiError from '~/utils/ApiError'
 }
 
 export const authMiddleware = {
-    isAuthorized
+        isAuthorized
 }
