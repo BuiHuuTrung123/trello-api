@@ -46,8 +46,11 @@ const update = async (cardId, reqBody, cardCoverFile) => {
         throw error
     }
 }
+
+
 export const cardService = {
     createNew,
-    update
+    update,
+ 
 
 }

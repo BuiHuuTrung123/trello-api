@@ -87,10 +87,22 @@ const update = async (cardId, updateData) => {
         throw new Error(error)
     }
 }
+
+const move = async (cardId) => {
+    try {
+      const deleteResult =await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndDelete({_id: new ObjectId(cardId) });
+      
+        return deleteResult
+    } catch (error) {
+
+    }
+}
 export const cardModel = {
     CARD_COLLECTION_NAME,
     CARD_COLLECTION_SCHEMA,
     createNew,
-    findOneById, update
+    findOneById,
+    update,
+    move,
 }
 
