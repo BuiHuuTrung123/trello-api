@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { cardService } from '~/services/cardService'
+import { cardModel } from '~/models/cardModel'
 const createNew = async (req, res, next) => {
     try {
         //Điều hướng dữ liệu sang tầng service
@@ -23,8 +24,17 @@ const update = async (req, res, next) => {
         next(error)
     }
 }
-
+const move = async (req, res, next) => {
+    try {
+        const cardId = req.params.id
+        const moveCard = await cardModel.move(cardId)
+        res.status(StatusCodes.OK).json(moveCard)
+    } catch (error) {
+        next(error)
+    }
+}
 export const cardController = {
     createNew,
-    update
+    update,
+    move
 }
